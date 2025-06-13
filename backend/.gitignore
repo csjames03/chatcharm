@@ -14,10 +14,7 @@
 prisma/dev.db
 \*.sqlite
 
-# Environment variables
 
-.env
-.env.\*.local
 
 # Logs
 
@@ -68,3 +65,5 @@ Thumbs.db
 # Misc
 
 \*.local
+
+/src/generated/prisma

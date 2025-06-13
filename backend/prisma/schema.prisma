@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum Sender {
+  AGENT
+  FAN
+}
+
+model Fan {
+  id             String         @id @default(cuid())
+  name           String
+  avatarUrl      String?
+  conversations  Conversation[]
+  spendings      Spending[]     @relation("FanSpendings")
+}
+
+model Spending {
+  id        String   @id @default(cuid())
+  fan       Fan      @relation(fields: [fanId], references: [id], name: "FanSpendings")
+  fanId     String
+  amount    Float
+  date      DateTime @default(now())
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  fan           Fan       @relation(fields: [fanId], references: [id])
+  fanId         String
+  priority      Priority  @default(MEDIUM)
+  messages      Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  sender         Sender
+  text           String
+  timestamp      DateTime     @default(now())
+}
+
+model Template {
+  id    String @id @default(cuid())
+  title String
+  text  String
+}
