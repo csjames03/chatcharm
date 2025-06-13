@@ -1,0 +1,70 @@
+# Node dependencies
+
+/node\_modules
+
+# Build output
+
+/.next
+/out
+/dist
+/build
+
+# Prisma local database (SQLite)
+
+prisma/dev.db
+\*.sqlite
+
+# Environment variables
+
+.env
+.env.\*.local
+
+# Logs
+
+npm-debug.log\*
+yarn-debug.log\*
+pnpm-debug.log\*
+logs/
+\*.log
+
+# Coverage directory
+
+coverage/
+
+# Editor directories and files
+
+.vscode/
+.idea/
+\*.suo
+*.ntvs*
+\*.njsproj
+\*.sln
+\*.sw?
+
+# macOS
+
+.DS\_Store
+
+# Windows
+
+Thumbs.db
+
+# Optional npm cache directory
+
+.npm
+
+# Parcel cache
+
+.cache
+
+# Yarn integrity file
+
+.yarn-integrity
+
+# Dependencies cache
+
+.pnp.\*
+
+# Misc
+
+\*.local
