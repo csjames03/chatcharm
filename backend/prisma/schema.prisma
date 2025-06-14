@@ -1,14 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-
 generator client {
   provider = "prisma-client-js"
 }
-
 
 datasource db {
   provider = "sqlite"
@@ -32,6 +24,18 @@ model Fan {
   avatarUrl      String?
   conversations  Conversation[]
   spendings      Spending[]     @relation("FanSpendings")
+  subscribeSince DateTime       @default(now())
+  messages       Message[]      @relation("FanMessages") // Fan as message sender
+}
+
+model Agent {
+  id             String         @id @default(cuid())
+  name           String
+  avatarUrl      String?
+  conversations  Conversation[]
+  messages       Message[]      @relation("AgentMessages") // Agent as message sender
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Spending {
@@ -46,6 +50,8 @@ model Conversation {
   id            String    @id @default(cuid())
   fan           Fan       @relation(fields: [fanId], references: [id])
   fanId         String
+  agent         Agent     @relation(fields: [agentId], references: [id])
+  agentId       String
   priority      Priority  @default(MEDIUM)
   messages      Message[]
 }
@@ -54,7 +60,11 @@ model Message {
   id             String       @id @default(cuid())
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId String
-  sender         Sender
+  senderType     Sender       // AGENT or FAN
+  fan            Fan?         @relation("FanMessages", fields: [fanId], references: [id])
+  fanId          String?
+  agent          Agent?       @relation("AgentMessages", fields: [agentId], references: [id])
+  agentId        String?
   text           String
   timestamp      DateTime     @default(now())
 }

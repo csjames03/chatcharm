@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import conversationsRouter from './conversations';
+import conversationRouter from './conversation';
+import fansRouter from './fans';
+import templatesRouter from './templates';
+import messageRouter from './message';
+const router = Router();
+router.use('/conversations', conversationsRouter);
+router.use('/conversation', conversationRouter);
+router.use('/fans', fansRouter);
+router.use('/templates', templatesRouter);
+router.use('/message', messageRouter);
+export default router;
