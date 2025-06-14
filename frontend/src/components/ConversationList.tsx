@@ -1,87 +1,51 @@
-import { useState, useMemo  } from 'react';
+import { useState, useMemo, useEffect  } from 'react';
 import {  Edit2 } from 'lucide-react';
 import SearchBar from './SearchBar';
 import ChatCard from './ChatCard';
-import { PriorityRate, ChatType } from './ChatCard';
+import { ChatType } from './ChatCard';
 
 
+const ConversationList = ({changeCurrentFanId}:{changeCurrentFanId: (id: string) => void;}) => {
 
-export const dummyChats: ChatType[] = [
-  {
-    name: 'James Ocao',
-    priorityRate: PriorityRate.HIGH,
-    imageUrl: 'https://avatars.githubusercontent.com/u/98975725?s=400&u=4561bade7c6588fd13c0c08b85683b14cca883b7&v=4',
-    date: new Date('2025-06-13T10:30:00'),
-  },
-  {
-    name: 'Maria Garcia',
-    priorityRate: PriorityRate.NORMAL,
-    imageUrl: 'https://randomuser.me/api/portraits/women/44.jpg',
-    date: new Date('2025-06-13T11:00:00'),
-  },
-  {
-    name: 'John Doe',
-    priorityRate: PriorityRate.LOW,
-    imageUrl: null,
-    date: new Date('2025-06-12T14:45:00'),
-  },
-  {
-    name: 'Jane Smith',
-    priorityRate: PriorityRate.HIGH,
-    imageUrl: 'https://randomuser.me/api/portraits/women/68.jpg',
-    date: new Date('2025-06-11T09:20:00'),
-  },
-  {
-    name: 'Alex Johnson',
-    priorityRate: PriorityRate.NORMAL,
-    imageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    date: new Date('2025-06-10T16:05:00'),
-  },
-  {
-    name: 'Priya Patel',
-    priorityRate: PriorityRate.LOW,
-    imageUrl: 'https://randomuser.me/api/portraits/women/12.jpg',
-    date: new Date('2025-06-09T08:15:00'),
-  },
-  {
-    name: 'Chen Li',
-    priorityRate: PriorityRate.HIGH,
-    imageUrl: null,
-    date: new Date('2025-06-08T19:30:00'),
-  },
-  {
-    name: 'Ahmed Khan',
-    priorityRate: PriorityRate.NORMAL,
-    imageUrl: 'https://randomuser.me/api/portraits/men/56.jpg',
-    date: new Date('2025-06-07T13:50:00'),
-  },
-  {
-    name: 'Sara Martinez',
-    priorityRate: PriorityRate.LOW,
-    imageUrl: 'https://randomuser.me/api/portraits/women/22.jpg',
-    date: new Date('2025-06-06T21:10:00'),
-  },
-  {
-    name: 'David Brown',
-    priorityRate: PriorityRate.HIGH,
-    imageUrl: null,
-    date: new Date('2025-06-05T07:45:00'),
-  },
-];
-
-
-const ConversationList = () => {
-
-    const [searchKey, setSearchKey] = useState<string>("a")
+    const [loading, setLoading] = useState<boolean>(true)
+    const [searchKey, setSearchKey] = useState<string>(" ")
+    const [conversationList, setConversationList] = useState<ChatType[]>([])
     
+    useEffect(()=>{
 
-    const filteredChats = useMemo(
-        () =>
-          dummyChats.filter(chat =>
-            chat.name.toLowerCase().includes(searchKey.trim().toLowerCase())
-          ),
-        [searchKey]
-      );
+        const getConversations = async () => {
+            try {
+                setLoading(true)
+              const res = await fetch('http://localhost:3001/api/conversations');
+              if (!res.ok) {
+                throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+              }
+              const data: ChatType[] = await res.json();
+
+              setConversationList(data)
+          
+              setLoading(false)
+            } catch (error) {
+              console.error('Error fetching conversations:', error);
+              setLoading(false)
+              return []; // or rethrow if you'd rather handle it elsewhere
+            }
+          };
+
+        getConversations()
+    },[])
+
+    const filteredChats = useMemo(() => {
+        const key = searchKey.trim().toLowerCase();
+        // if searchKey is empty, just return the whole list
+        if (!key) {
+          return conversationList;
+        }
+        // otherwise filter
+        return conversationList.filter(chat =>
+          chat.name.toLowerCase().includes(key)
+        );
+      }, [searchKey, conversationList]);
     
 
 
@@ -101,20 +65,27 @@ const ConversationList = () => {
           </div>
     
           {/* List */}
-          <div className="overflow-auto flex-1">
-            {filteredChats.length > 0 ? (
-              filteredChats.map((chat: ChatType, i) => (
-                <ChatCard
-                  key={i}
-                  {...chat}
-                />
-              ))
-            ) : (
-              <p className="p-4 text-center text-gray-500 dark:text-gray-400">
-                No Chats Found
-              </p>
-            )}
-          </div>
+          {
+            loading ? (
+                <p>LOADING..</p>
+            ):(
+                <div className="overflow-auto flex-1">
+                    {filteredChats.length > 0 ? (
+                    filteredChats.map((chat: ChatType, i) => (
+                        <ChatCard
+                        key={i}
+                        {...chat }
+                        changeCurrentFanId={changeCurrentFanId}
+                        />
+                    ))
+                    ) : (
+                    <p className="p-4 text-center text-gray-500 dark:text-gray-400">
+                        No Chats Found
+                    </p>
+                    )}
+                </div>
+            )
+          }
         </div>
       )
     

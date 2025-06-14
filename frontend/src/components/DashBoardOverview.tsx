@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { Trophy } from 'lucide-react'
+import dayjs from 'dayjs';
 
 export interface FanProfile {
   name: string
@@ -8,7 +8,7 @@ export interface FanProfile {
 }
 
 export interface SpendingPoint {
-  day: string  // 'M', 'T', 'W', 'T', 'F', 'S', 'S'
+  day: string 
   amount: number
 }
 
@@ -44,7 +44,7 @@ export default function DashboardOverview({
             {profile.name}
           </h2>
           <p className="text-gray-500 dark:text-gray-400">
-            Subscribed since {profile.subscribedSince}
+            Subscribed since {dayjs(profile.subscribedSince).format('MMMM YYYY')}
           </p>
         </div>
       </div>
