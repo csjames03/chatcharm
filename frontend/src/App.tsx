@@ -19,10 +19,11 @@ interface Message {
   conversationId: string;
 }
 
+export const BACKEND_PORT = import.meta.env.BACKEND_PORT || '3001';
 
 
 const daysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const socket: Socket = io('http://localhost:3001');
+const socket: Socket = io(`http://localhost:${BACKEND_PORT}`);
 export enum MobileScreenCurrentView  {
   CONVO_LIST,
   CHAT,
@@ -50,12 +51,13 @@ export default function App() {
     return false;
   });
   const [mobileCurrentView, setMobileCurrentView] = useState<MobileScreenCurrentView>(MobileScreenCurrentView.CONVO_LIST)
+
   useEffect(() => {
     const getFanData = async () => {
       try {
         setMessagesLoading(true);
 
-        const res = await fetch(`http://localhost:3001/api/conversation/${currentFanId}`);
+        const res = await fetch(`http://localhost:${BACKEND_PORT}/api/conversation/${currentFanId}`);
         if (!res.ok) throw new Error(`Failed to fetch conversation: ${res.statusText}`);
         const data = await res.json();
 
@@ -68,7 +70,7 @@ export default function App() {
           subscribedSince: data.fan.subscribeSince || 'N/A',
         });
 
-        const spendRes = await fetch(`http://localhost:3001/api/fans/${data.fan.id}`);
+        const spendRes = await fetch(`http://localhost:${BACKEND_PORT}/api/fans/${data.fan.id}`);
         if (!spendRes.ok) throw new Error(`Failed to fetch spending: ${spendRes.statusText}`);
         const spendData = await spendRes.json();
 

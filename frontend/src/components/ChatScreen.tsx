@@ -3,7 +3,7 @@ import { ArrowLeft, MoreVertical } from 'lucide-react';
 import dayjs from '../../lib/dayjs-setup';
 import type { Socket } from 'socket.io-client';
 import { MobileScreenCurrentView } from '../App';
-
+import { BACKEND_PORT } from '../App';
 interface Message {
   id: string;
   text: string;
@@ -42,7 +42,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/templates');
+        const res = await fetch(`http://localhost:${BACKEND_PORT}/api/templates`);
         const data = await res.json();
         setQuickReplies(data.map((t: { text: string }) => t.text));
       } catch (err) {
@@ -92,7 +92,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
         fanId,
       };
 
-      const response = await fetch('http://localhost:3001/api/message', {
+      const response = await fetch(`http://localhost:${BACKEND_PORT}/api/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -116,7 +116,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
           conversationId,
         };
 
-        const replyRes = await fetch('http://localhost:3001/api/message', {
+        const replyRes = await fetch(`http://localhost:${BACKEND_PORT}/api/message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(fakeReply),

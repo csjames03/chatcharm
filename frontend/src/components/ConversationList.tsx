@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import ChatCard from './ChatCard';
 import { ChatType } from './ChatCard';
 import { MobileScreenCurrentView } from '../App';
-
+import { BACKEND_PORT } from '../App';
 
 const ConversationList = ({changeCurrentFanId, mobileCurrentView}:{changeCurrentFanId: (id: string) => void; mobileCurrentView: (view:MobileScreenCurrentView)=>void;}) => {
 
@@ -17,7 +17,7 @@ const ConversationList = ({changeCurrentFanId, mobileCurrentView}:{changeCurrent
         const getConversations = async () => {
             try {
                 setLoading(true)
-              const res = await fetch('http://localhost:3001/api/conversations');
+              const res = await fetch(`http://localhost:${BACKEND_PORT}/api/conversations`);
               if (!res.ok) {
                 throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
               }
