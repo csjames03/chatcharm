@@ -66,3 +66,66 @@ cd frontend
 npm run dev
 ```
 
+
+## API Reference
+
+### `GET /api/conversations`
+
+Returns a list of all fan conversations with name, priority, and latest message info.
+
+### `GET /api/conversation/:id`
+
+Returns message history for a specific conversation.
+
+### `GET /api/fans/:id`
+
+Returns fan profile and weekly spending data.
+
+### `GET /api/templates`
+
+Returns a list of quick reply templates.
+
+### `POST /api/message`
+
+Sends a new message.
+
+**Required fields (JSON):**
+
+```json
+{
+  "conversationId": "string",
+  "text": "string",
+  "senderType": "AGENT" | "FAN",
+  "agentId": "string",     // required if senderType is AGENT
+  "fanId": "string"       // required if senderType is FAN
+}
+```
+
+---
+
+## Real-time Messaging
+
+* Messages are emitted via Socket.IO in real-time.
+* Agent messages are sent via form or quick reply templates.
+* A simulated typing indicator appears before fan replies.
+* Replies from fans are delayed and automatically generated for demo/testing purposes.
+
+---
+
+## Notes for Reviewers
+
+* Some IDs such as `agentId` and `fanId` are hardcoded into the frontend and backend.
+* The app requires the `prisma/dev.db` file to run properly — this file includes seeded values (conversations, fans, templates). You may change these values later by seeding your own data or modifying the database schema.
+* Templates used by the frontend are fetched via the `/api/templates` endpoint.
+
+---
+
+## Future Improvements
+
+* 🔐 Authentication & session-based agent profiles
+* 🧠 AI-assisted smart reply generation (LLM integration)
+* 📊 More advanced analytics dashboard with charts
+* 📩 Notification system for unread conversations
+* 🔍 Search and filtering of conversations
+* ✍️ Rich text or emoji support in messages
+* 📁 Image/video/media message support
