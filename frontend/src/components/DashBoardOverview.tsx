@@ -39,7 +39,7 @@ export default function DashboardOverview({
         transition-colors
         pt-6 gap-2
       ">
-        <div className='lg:hidden ' aria-label="Go back" onClick={() => {
+        <div className='lg:hidden cursor-pointer' aria-label="Go back" onClick={() => {
           mobileCurrentView?.(MobileScreenCurrentView.CHAT)
         }}>
           <ChevronLeft className="text-gray-700 dark:text-gray-300" size={34} />

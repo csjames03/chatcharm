@@ -19,10 +19,7 @@ interface Message {
   conversationId: string;
 }
 
-const quickReplies: string[] = [
-  'Join me for a live stream',
-  'Check out my latest post!',
-];
+
 
 const daysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const socket: Socket = io('http://localhost:3001');
@@ -167,7 +164,6 @@ export default function App() {
                   title={chatScreenFan?.fan?.name || 'Conversation'}
                   initialMessages={messages}
                   fanId={currentFanId}
-                  quickReplies={quickReplies}
                   mobileCurrentView={setMobileCurrentView} 
                   conversationId={currentConversationId}
                   socket={socket}
