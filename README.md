@@ -1,4 +1,4 @@
-# 📱 ChatCharm — Fan Engagement Dashboard
+# >_< ChatCharm — Fan Engagement Dashboard
 
 **ChatCharm** is a full-stack fan engagement dashboard prototype built to help  chatters manage fan interactions more efficiently. The app features real-time messaging, fan profiles, priority tagging, quick reply templates, and basic conversion analytics.
 
@@ -62,7 +62,7 @@ npm run dev
 ### 5. Start frontend
 
 ```bash
-cd backend
+cd frontend
 npm run dev
 ```
 
