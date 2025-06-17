@@ -129,3 +129,61 @@ Sends a new message.
 * 🔍 Search and filtering of conversations
 * ✍️ Rich text or emoji support in messages
 * 📁 Image/video/media message support
+
+---
+
+## 🖼️ Screenshots
+
+### Dashboard View
+#### Big Screen 
+![Dashboard Screenshot Quick Reply closed (Dark Mode)](./frontend/public/PC1.png)
+![Dashboard Screenshot Quick Reply opened (Dark Mode)](./frontend/public/PC2.png)
+#### Small Screen 
+![Dashboard Screenshot (Light Mode)](./frontend/public/M3.png)
+
+### Conversation  View
+#### Small Screen 
+![Chat Screen Screenshot Quick Reply opened  (Dark Mode)](./frontend/public/M2.png)
+
+
+### Conversation List  View
+#### Small Screen 
+![Conversation List  Screenshot  (Dark Mode)](./frontend/public/M1.png)
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
