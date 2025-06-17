@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { io, Socket } from 'socket.io-client';
 import NavigationBar from './components/NavigationBar';
 import ConversationList from './components/ConversationList';
 import ChatScreen from './components/ChatScreen';
@@ -24,6 +25,12 @@ const quickReplies: string[] = [
 ];
 
 const daysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const socket: Socket = io('http://localhost:3001');
+export enum MobileScreenCurrentView  {
+  CONVO_LIST,
+  CHAT,
+  DASHBOARD
+} 
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -39,7 +46,13 @@ export default function App() {
   const [currentConversationId, setCurrentConversationId] = useState<string>('');
   const [conversionRate, setConversionRate] = useState(0);
   const [churnRate, setChurnRate] = useState(0);
-
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return false;
+  });
+  const [mobileCurrentView, setMobileCurrentView] = useState<MobileScreenCurrentView>(MobileScreenCurrentView.CONVO_LIST)
   useEffect(() => {
     const getFanData = async () => {
       try {
@@ -93,17 +106,42 @@ export default function App() {
     getFanData();
   }, [currentFanId]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+  
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+  
+    // Initial value
+    setIsMobile(mediaQuery.matches);
+    console.log("setIsMobile", isMobile)
+  
+    // Listen for changes
+    mediaQuery.addEventListener('change', handleChange);
+  
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
+  
+
   return (
     <div className="font-mono w-screen h-screen bg-white dark:bg-zinc-900">
       <NavigationBar />
-      <div className="flex flex-col md:flex-row h-[calc(100vh-80px)]">
+      <div className="flex h-[calc(100vh-80px)]">
         {/* Left Sidebar */}
-        <div className="md:w-80 w-full md:border-r border-b md:border-b-0 border-gray-200 dark:border-gray-700">
-          <ConversationList changeCurrentFanId={setCurrentFanId} />
+        <div className={`${mobileCurrentView  != MobileScreenCurrentView.CONVO_LIST && isMobile && 'hidden'} w-full lg:w-80 border-r border-gray-200 dark:border-gray-700 `}>
+        <ConversationList 
+          changeCurrentFanId={setCurrentFanId} 
+          mobileCurrentView={setMobileCurrentView} 
+        />
+          
         </div>
 
         {/* Main Chat */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className={`flex-1 relative w-full min-w-[300px] overflow-hidden ${mobileCurrentView  != MobileScreenCurrentView.CHAT && isMobile && 'hidden'}`}>
           <AnimatePresence mode="wait">
             {messagesLoading ? (
               <motion.div
@@ -130,7 +168,9 @@ export default function App() {
                   initialMessages={messages}
                   fanId={currentFanId}
                   quickReplies={quickReplies}
+                  mobileCurrentView={setMobileCurrentView} 
                   conversationId={currentConversationId}
+                  socket={socket}
                 />
               </motion.div>
             )}
@@ -138,7 +178,7 @@ export default function App() {
         </div>
 
         {/* Right Sidebar */}
-        <div className="md:w-80 w-full border-t md:border-t-0 md:border-l h-[calc(100vh-80px)] border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className={`${mobileCurrentView  != MobileScreenCurrentView.DASHBOARD && isMobile && 'hidden'} w-full lg:w-80 border-l h-[calc(100vh-80px)] border-gray-200 dark:border-gray-700 overflow-hidden`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={`dashboard-${currentFanId}`}
@@ -153,6 +193,7 @@ export default function App() {
                 spendingData={spendingData}
                 conversionRate={conversionRate}
                 churnRate={churnRate}
+                mobileCurrentView={setMobileCurrentView}
               />
             </motion.div>
           </AnimatePresence>

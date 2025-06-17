@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from '../../lib/dayjs-setup';
-
+import { MobileScreenCurrentView } from '../App';
 export enum PriorityRate {
   HIGH = 'HIGH',
   NORMAL = 'NORMAL',
@@ -13,6 +13,7 @@ export interface ChatType {
   priorityRate: PriorityRate | string;
   imageUrl: string | null;
   date: Date;
+  mobileCurrentView?: (view:MobileScreenCurrentView)=> void;
   changeCurrentFanId?: (id: string) => void;
 }
 
@@ -33,49 +34,52 @@ const ChatCard: React.FC<ChatType> = ({
   imageUrl,
   date,
   changeCurrentFanId,
+  mobileCurrentView
 }) => {
   const time = getRelativeShort(date);
 
   const { color, label } = (() => {
     switch (priorityRate) {
       case PriorityRate.HIGH:
-        return { color: 'bg-red-500', label: 'High priority' };
+        return { color: 'bg-red-500', label: 'High Priority' };
       case PriorityRate.NORMAL:
-      case 'MEDIUM': // if API returns "MEDIUM"
-        return { color: 'bg-yellow-500', label: 'Medium' };
+      case 'MEDIUM':
+        return { color: 'bg-yellow-500', label: 'Medium Priority' };
       case PriorityRate.LOW:
       default:
-        return { color: 'bg-gray-500', label: 'Low' };
+        return { color: 'bg-gray-500', label: 'Low Priority' };
     }
   })();
 
   return (
     <div
-      className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer"
-      onClick={() => changeCurrentFanId?.(id)}
+      onClick={() => {
+        changeCurrentFanId?.(id);
+        mobileCurrentView?.(MobileScreenCurrentView.CHAT) ;
+        console.log("mobileCurrentView?.(MobileScreenCurrentView.CHAT)", MobileScreenCurrentView.CHAT)
+      }}
+      className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-800 transition cursor-pointer border-b border-gray-200 dark:border-zinc-700"
     >
-      {/* Left: Avatar + Info */}
-      <div className="flex items-center space-x-3">
+      {/* Avatar and Info */}
+      <div className="flex items-center space-x-4">
         <img
           src={imageUrl ?? '/default-avatar.png'}
           alt={name}
-          className="w-10 h-10 rounded-full object-cover"
+          className="w-12 h-12 rounded-full object-cover border border-gray-300 dark:border-zinc-600"
         />
         <div className="flex flex-col">
-          <span className="text-gray-900 dark:text-white font-medium">
+          <span className="font-semibold text-gray-800 dark:text-white truncate max-w-[160px]">
             {name}
           </span>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
             <span className={`w-2 h-2 rounded-full ${color}`} />
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {label}
-            </span>
+            <span>{label}</span>
           </div>
         </div>
       </div>
 
-      {/* Right: time */}
-      <span className="text-sm text-gray-500 dark:text-gray-400">
+      {/* Time */}
+      <span className="text-sm text-gray-400 dark:text-gray-500 whitespace-nowrap">
         {time}
       </span>
     </div>

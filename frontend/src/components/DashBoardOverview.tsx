@@ -1,6 +1,7 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import dayjs from 'dayjs';
-
+import { MobileScreenCurrentView } from '../App';
+import { ChevronLeft } from 'lucide-react';
 export interface FanProfile {
   name: string
   imageUrl: string
@@ -17,6 +18,7 @@ export interface DashboardOverviewProps {
   spendingData: SpendingPoint[]
   conversionRate: number    // 0.14 for 14%
   churnRate: number         // 0.012 for 1.2%
+  mobileCurrentView: (view:MobileScreenCurrentView) => void;
 }
 
 export default function DashboardOverview({
@@ -24,16 +26,24 @@ export default function DashboardOverview({
   spendingData,
   conversionRate,
   churnRate,
+  mobileCurrentView
 }: DashboardOverviewProps) {
   return (
     <div className="space-y-6">
       {/* ─── Fan Profile ───────────────────────────────────── */}
+      
       <div className="
         flex items-center
         bg-white dark:bg-gray-800
-        p-6 rounded-lg shadow
+        rounded-lg shadow
         transition-colors
+        pt-6 gap-2
       ">
+        <div className='lg:hidden ' aria-label="Go back" onClick={() => {
+          mobileCurrentView?.(MobileScreenCurrentView.CHAT)
+        }}>
+          <ChevronLeft className="text-gray-700 dark:text-gray-300" size={34} />
+      </div>
         <img
           src={profile.imageUrl}
           alt={profile.name}

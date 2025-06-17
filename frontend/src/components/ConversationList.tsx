@@ -3,9 +3,10 @@ import {  Edit2 } from 'lucide-react';
 import SearchBar from './SearchBar';
 import ChatCard from './ChatCard';
 import { ChatType } from './ChatCard';
+import { MobileScreenCurrentView } from '../App';
 
 
-const ConversationList = ({changeCurrentFanId}:{changeCurrentFanId: (id: string) => void;}) => {
+const ConversationList = ({changeCurrentFanId, mobileCurrentView}:{changeCurrentFanId: (id: string) => void; mobileCurrentView: (view:MobileScreenCurrentView)=>void;}) => {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [searchKey, setSearchKey] = useState<string>(" ")
@@ -74,9 +75,14 @@ const ConversationList = ({changeCurrentFanId}:{changeCurrentFanId: (id: string)
                     filteredChats.map((chat: ChatType, i) => (
                         <ChatCard
                         key={i}
-                        {...chat }
+                        id={chat.id}
+                        name={chat.name}
+                        priorityRate={chat.priorityRate}
+                        imageUrl={chat.imageUrl}
+                        date={chat.date}
                         changeCurrentFanId={changeCurrentFanId}
-                        />
+                        mobileCurrentView={mobileCurrentView}
+                      />
                     ))
                     ) : (
                     <p className="p-4 text-center text-gray-500 dark:text-gray-400">
