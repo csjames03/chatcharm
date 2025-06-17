@@ -29,5 +29,40 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/chatcharm.git
+git clone https://github.com/csjames03/chatcharm.git
 cd chatcharm
+
+```
+### 2. Install dependencies
+
+```bash
+cd backend
+npm install
+
+cd ../frontend
+npm install
+```
+
+### 3. Push the dev database
+
+# ⚠️ Important: prisma/dev.db is included in the repository because the frontend code relies on seeded data (e.g. fan IDs, agent ID, and template IDs). You must use this database to avoid errors.
+```bash
+cd backend
+npx prisma generate
+npx prisma migrate dev
+```
+
+### 4. Start backend
+
+```bash
+cd backend
+npm run dev
+```
+
+### 5. Start frontend
+
+```bash
+cd backend
+npm run dev
+```
+
