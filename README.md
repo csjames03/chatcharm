@@ -45,7 +45,7 @@ npm install
 
 ### 3. Push the dev database
 
-# ⚠️ Important: prisma/dev.db is included in the repository because the frontend code relies on seeded data (e.g. fan IDs, agent ID, and template IDs). You must use this database to avoid errors.
+#### ⚠️ Important: prisma/dev.db is included in the repository because the frontend code relies on seeded data (e.g. fan IDs, agent ID, and template IDs). You must use this database to avoid errors.
 ```bash
 cd backend
 npx prisma generate
