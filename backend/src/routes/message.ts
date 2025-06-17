@@ -1,48 +1,38 @@
 import { Router, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import prisma from '../../lib/db';
+import { getIO } from '../../lib/socket'; // 👈 get io here
 
 const messageRouter = Router();
 
-// POST /api/message
 messageRouter.post(
     '/',
     asyncHandler(async (req: Request, res: Response) => {
         const { conversationId, agentId, fanId, senderType, text } = req.body;
 
-        // Manual validation
+        // Basic validation (same as yours)
         if (!conversationId || typeof conversationId !== 'string') {
-            return res.status(400).json({ error: 'conversationId is required and must be a string' });
+            return res.status(400).json({ error: 'conversationId is required' });
         }
-
         if (!text || typeof text !== 'string') {
-            return res.status(400).json({ error: 'text is required and must be a string' });
+            return res.status(400).json({ error: 'text is required' });
         }
-
         if (!senderType || !['AGENT', 'FAN'].includes(senderType)) {
-            return res.status(400).json({ error: 'senderType must be either "AGENT" or "FAN"' });
+            return res.status(400).json({ error: 'senderType invalid' });
         }
-
         if (senderType === 'AGENT' && (!agentId || typeof agentId !== 'string')) {
-            return res.status(400).json({ error: 'agentId is required when senderType is AGENT' });
+            return res.status(400).json({ error: 'agentId required' });
         }
-
         if (senderType === 'FAN' && (!fanId || typeof fanId !== 'string')) {
-            return res.status(400).json({ error: 'fanId is required when senderType is FAN' });
+            return res.status(400).json({ error: 'fanId required' });
         }
 
-        // Create the message
         const message = await prisma.message.create({
-            data: {
-                conversationId,
-                senderType,
-                text,
-                agentId,
-                fanId
-            },
+            data: { conversationId, senderType, text, agentId, fanId },
         });
 
-        console.log("Message Created Succesfully", message)
+        // 🔥 Emit the created message to all clients
+        getIO().emit('receive_message', message);
 
         res.status(201).json(message);
     })

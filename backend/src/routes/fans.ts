@@ -11,7 +11,10 @@ fansRouter.get(
         const { id } = req.params;
         const fan = await prisma.fan.findUnique({
             where: { id },
-            include: { spendings: true, conversations: true }
+            include: {
+                spendings: true,
+                conversations: true
+            }
         });
         if (!fan) return res.status(404).json({ error: 'Fan not found' });
         res.json(fan);
